@@ -1,0 +1,53 @@
+{
+  "name": "fish-table-lib",
+  "version": "0.1.0",
+  "description": "Generic, reusable DataTable component built with React, TypeScript, shadcn/ui and TanStack Table",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "react",
+    "table",
+    "datatable",
+    "shadcn",
+    "tanstack",
+    "typescript"
+  ],
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "dependencies": {
+    "@tanstack/react-table": "^8.21.3",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.542.0",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3"
+  }
+}
