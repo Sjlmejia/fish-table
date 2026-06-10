@@ -81,7 +81,7 @@ export function DataTable<TData, TValue = unknown>({
           pageCount: Math.max(1, Math.ceil(pagination.total / pagination.pageSize)),
         }
       : {}),
-    // Las columnas deben optar por el ordenamiento con `enableSorting: true`
+    // Columns must opt in to sorting with `enableSorting: true`
     defaultColumn: { enableSorting: false },
   })
 

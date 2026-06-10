@@ -2,13 +2,13 @@ import type * as React from 'react'
 import type { ColumnDef, Row } from '@tanstack/react-table'
 
 /**
- * Paginación controlada (server-side / manual).
- * `pageIndex` es 0-based.
+ * Controlled pagination (server-side / manual).
+ * `pageIndex` is 0-based.
  */
 export interface DataTablePaginationConfig {
   pageIndex: number
   pageSize: number
-  /** Total de filas en el servidor (no solo las de la página actual). */
+  /** Total row count on the server (not just the current page). */
   total: number
   onPageChange: (pageIndex: number) => void
   onPageSizeChange?: (pageSize: number) => void
@@ -16,9 +16,9 @@ export interface DataTablePaginationConfig {
 }
 
 /**
- * - `true`: paginación client-side automática (TanStack maneja el estado).
- * - `DataTablePaginationConfig`: paginación manual/server-side controlada por el consumidor.
- * - `undefined`: sin paginación.
+ * - `true`: automatic client-side pagination (TanStack manages state).
+ * - `DataTablePaginationConfig`: manual/server-side pagination controlled by the consumer.
+ * - `undefined`: no pagination.
  */
 export type DataTablePaginationProp = boolean | DataTablePaginationConfig
 

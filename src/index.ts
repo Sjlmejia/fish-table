@@ -18,6 +18,6 @@ export {
 
 export { cn } from './lib/utils'
 
-// Re-exports de TanStack Table para definir columnas sin instalar la dependencia aparte
+// Re-export TanStack Table types/helpers so consumers can define columns without a separate install
 export type { ColumnDef, Row, CellContext, HeaderContext } from '@tanstack/react-table'
 export { createColumnHelper } from '@tanstack/react-table'
