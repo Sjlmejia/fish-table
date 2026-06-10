@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/Sjlmejia/fish-table/issues"
   },
-  "homepage": "https://github.com/Sjlmejia/fish-table#readme",
+  "homepage": "https://fish-table-page.vercel.app/",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

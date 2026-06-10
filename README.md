@@ -2,7 +2,7 @@
 
 Tabla genérica reutilizable construida con **React + TypeScript**, **shadcn/ui** como base visual y **@tanstack/react-table** como motor de datos.
 
-Pensada para instalarse en cualquier proyecto como dependencia local o paquete npm.
+**Demo:** [fish-table-page.vercel.app](https://fish-table-page.vercel.app/)
 
 ## Características
 
@@ -14,30 +14,18 @@ Pensada para instalarse en cualquier proyecto como dependencia local o paquete n
 - Estilos shadcn/ui (Tailwind CSS v4 + variables CSS del tema).
 - Exporta también los primitivos `Table`, `TableHeader`, `TableRow`, etc. y `createColumnHelper` / `ColumnDef` de TanStack para no instalar la dependencia aparte.
 
-## Instalación local
+## Instalación
 
 ```bash
-# 1. Compilar la librería
-cd fish-table-lib
-npm install
-npm run build
-
-# 2. Instalarla en tu proyecto (queda en node_modules)
-cd ../mi-proyecto
-npm install ../fish-table-lib
+npm install fish-table-lib
 ```
 
-Esto agrega en tu `package.json`:
+También con yarn o pnpm:
 
-```json
-{
-  "dependencies": {
-    "fish-table-lib": "file:../fish-table-lib"
-  }
-}
+```bash
+yarn add fish-table-lib
+pnpm add fish-table-lib
 ```
-
-> También puedes publicarla en un registry y hacer `npm install fish-table-lib`.
 
 ### Requisitos del proyecto consumidor
 
@@ -232,3 +220,22 @@ npm run type-check  # tsc --noEmit
 
 - El bundle incluye `'use client'`, por lo que funciona directo en Next.js App Router.
 - `react` y `react-dom` son `peerDependencies`: se usa la versión de tu proyecto.
+
+## Instalación local (desarrollo)
+
+Si estás trabajando sobre el repo de la librería:
+
+```bash
+cd fish-table
+npm install
+npm run build
+npm link   # opcional: enlazar globalmente
+```
+
+En tu proyecto consumidor:
+
+```bash
+npm link fish-table-lib
+# o
+npm install ../fish-table
+```
