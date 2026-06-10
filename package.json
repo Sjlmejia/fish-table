@@ -2,6 +2,16 @@
   "name": "fish-table-lib",
   "version": "0.1.0",
   "description": "Generic, reusable DataTable component built with React, TypeScript, shadcn/ui and TanStack Table",
+  "author": "Jorge Mejia <jorgemejia2304@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sjlmejia/fish-table.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Sjlmejia/fish-table/issues"
+  },
+  "homepage": "https://github.com/Sjlmejia/fish-table#readme",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
