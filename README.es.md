@@ -241,3 +241,22 @@ npm link fish-table-lib
 # o
 npm install ../fish-table
 ```
+
+## Mover columnas y recordar su posición
+
+```tsx
+<DataTable
+  columns={columns}
+  data={users}
+  columnOrderStorageKey="users-table:column-order"
+/>
+```
+
+Arrastra el asa junto al encabezado hasta otra columna. El orden se restaura al volver a abrir la tabla. También puedes enfocar el asa y usar las flechas izquierda/derecha. El botón de ordenamiento de datos sigue funcionando por separado.
+
+| Prop | Type | Default |
+| --- | --- | --- |
+| `enableColumnReordering` | `boolean` | `Boolean(columnOrderStorageKey)` |
+| `columnOrderStorageKey` | `string` | `undefined` |
+
+Usa una clave única por tabla y usuario cuando corresponda, y IDs de columna estables (`accessorKey` o `id` explícito). Para mover sin guardar, usa `enableColumnReordering` sin clave. `enableColumnReordering={false}` oculta las asas aunque haya una clave. Las columnas nuevas se añaden al final y las eliminadas se ignoran. Los encabezados agrupados permiten mover columnas dentro de su mismo grupo. Si el almacenamiento está bloqueado o contiene datos inválidos, la tabla sigue funcionando. El arrastre usa HTML nativo para ratón; no incorpora arrastre táctil.

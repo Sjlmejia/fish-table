@@ -29,5 +29,9 @@ export interface DataTableProps<TData, TValue = unknown> {
   emptyMessage?: React.ReactNode
   pagination?: DataTablePaginationProp
   onRowClick?: (row: TData, tableRow: Row<TData>) => void
+  /** Enable column drag handles (also enabled by providing columnOrderStorageKey). */
+  enableColumnReordering?: boolean
+  /** Unique localStorage key for this table. Use stable column IDs across renders. */
+  columnOrderStorageKey?: string
   className?: string
 }

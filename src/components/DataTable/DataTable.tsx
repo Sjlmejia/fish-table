@@ -17,6 +17,7 @@ import {
   ChevronUp,
   ChevronsUpDown,
   Loader2,
+  GripVertical,
 } from 'lucide-react'
 
 import {
@@ -40,7 +41,29 @@ export function DataTable<TData, TValue = unknown>({
   pagination,
   onRowClick,
   className,
+  enableColumnReordering,
+  columnOrderStorageKey,
 }: DataTableProps<TData, TValue>) {
+  const [columnOrder, setColumnOrder] = React.useState<string[]>([])
+  const draggedColumn = React.useRef<string | null>(null)
+  const canReorder = enableColumnReordering ?? Boolean(columnOrderStorageKey)
+
+  React.useEffect(() => {
+    let savedOrder: string[] = []
+    if (columnOrderStorageKey) {
+      try {
+        const saved: unknown = JSON.parse(window.localStorage.getItem(columnOrderStorageKey) ?? 'null')
+        if (Array.isArray(saved) && saved.every(id => typeof id === 'string')) {
+          savedOrder = [...new Set(saved)]
+        }
+      } catch {
+        // Storage may be unavailable or contain invalid JSON.
+      }
+    }
+    setColumnOrder(savedOrder)
+    draggedColumn.current = null
+  }, [columnOrderStorageKey])
+
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [internalPagination, setInternalPagination] = React.useState({
     pageIndex: 0,
@@ -55,6 +78,7 @@ export function DataTable<TData, TValue = unknown>({
     columns,
     state: {
       sorting,
+      columnOrder,
       ...(isManualPagination
         ? {
             pagination: {
@@ -67,6 +91,7 @@ export function DataTable<TData, TValue = unknown>({
           : {}),
     },
     onSortingChange: setSorting,
+    onColumnOrderChange: setColumnOrder,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     ...(isClientPagination
@@ -85,6 +110,28 @@ export function DataTable<TData, TValue = unknown>({
     defaultColumn: { enableSorting: false },
   })
 
+  const moveColumn = (sourceId: string, targetId: string) => {
+    if (!canReorder || sourceId === targetId) return
+    const source = table.getColumn(sourceId)
+    const target = table.getColumn(targetId)
+    // Keep grouped headers intact by moving leaves only within their group.
+    if (!source || !target || source.columns.length || target.columns.length || source.parent?.id !== target.parent?.id) return
+    const order = table.getAllLeafColumns().map(column => column.id)
+    const from = order.indexOf(sourceId)
+    const to = order.indexOf(targetId)
+    if (from < 0 || to < 0) return
+    order.splice(from, 1)
+    order.splice(to, 0, sourceId)
+    setColumnOrder(order)
+    if (columnOrderStorageKey) {
+      try {
+        window.localStorage.setItem(columnOrderStorageKey, JSON.stringify(order))
+      } catch {
+        // Reordering still works when persistence is blocked or storage is full.
+      }
+    }
+  }
+
   const rows = table.getRowModel().rows
 
   return (
@@ -95,7 +142,48 @@ export function DataTable<TData, TValue = unknown>({
             {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map(header => (
-                  <TableHead key={header.id} colSpan={header.colSpan}>
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    onDragOver={event => {
+                      if (canReorder && draggedColumn.current && !header.column.columns.length) {
+                        event.preventDefault()
+                        event.dataTransfer.dropEffect = 'move'
+                      }
+                    }}
+                    onDrop={event => {
+                      const source = draggedColumn.current
+                      if (!source) return
+                      event.preventDefault()
+                      moveColumn(source, header.column.id)
+                      draggedColumn.current = null
+                    }}
+                  >
+                    {canReorder && !header.isPlaceholder && !header.column.columns.length && (
+                      <button
+                        type="button"
+                        draggable
+                        aria-label={`Mover columna ${header.column.id}`}
+                        title="Arrastra para mover; usa las flechas izquierda y derecha con el teclado"
+                        className="mr-1 inline-flex cursor-grab items-center align-middle active:cursor-grabbing"
+                        onDragStart={event => {
+                          draggedColumn.current = header.column.id
+                          event.dataTransfer.effectAllowed = 'move'
+                          event.dataTransfer.setData('text/plain', header.column.id)
+                        }}
+                        onDragEnd={() => { draggedColumn.current = null }}
+                        onKeyDown={event => {
+                          if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+                          event.preventDefault()
+                          const siblings = table.getAllLeafColumns().filter(column => column.parent?.id === header.column.parent?.id)
+                          const index = siblings.findIndex(column => column.id === header.column.id)
+                          const target = siblings[index + (event.key === 'ArrowLeft' ? -1 : 1)]
+                          if (target) moveColumn(header.column.id, target.id)
+                        }}
+                      >
+                        <GripVertical className="size-3.5" aria-hidden="true" />
+                      </button>
+                    )}
                     {header.isPlaceholder ? null : header.column.getCanSort() ? (
                       <button
                         type="button"
@@ -123,7 +211,7 @@ export function DataTable<TData, TValue = unknown>({
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell colSpan={table.getVisibleLeafColumns().length} className="h-24 text-center">
                   <span className="text-muted-foreground inline-flex items-center gap-2">
                     <Loader2 className="size-4 animate-spin" />
                     Cargando...
@@ -133,7 +221,7 @@ export function DataTable<TData, TValue = unknown>({
             ) : rows.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={table.getVisibleLeafColumns().length}
                   className="text-muted-foreground h-24 text-center"
                 >
                   {emptyMessage}

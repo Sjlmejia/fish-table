@@ -241,3 +241,22 @@ npm link fish-table-lib
 # or
 npm install ../fish-table
 ```
+
+## Reorder columns and remember their positions
+
+```tsx
+<DataTable
+  columns={columns}
+  data={users}
+  columnOrderStorageKey="users-table:column-order"
+/>
+```
+
+Drag the handle beside a header onto another column. The order is restored when the table opens again. You can also focus a handle and use the left/right arrow keys. Data sorting remains available through its separate button.
+
+| Prop | Type | Default |
+| --- | --- | --- |
+| `enableColumnReordering` | `boolean` | `Boolean(columnOrderStorageKey)` |
+| `columnOrderStorageKey` | `string` | `undefined` |
+
+Use a unique key per table and user where applicable, and stable column IDs (`accessorKey` or an explicit `id`). For reordering without persistence, use `enableColumnReordering` without a key. `enableColumnReordering={false}` hides handles even with a key. New columns are appended and removed columns are ignored. Grouped headers support moving columns within the same group. The table continues working if storage is blocked or contains invalid data. Dragging uses native HTML mouse interaction; touch dragging is not included.
